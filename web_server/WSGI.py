@@ -52,12 +52,13 @@ class WSGIServer(object):
 	#print(request_header)
 				
 		ret=re.match(r'[^/]+(/[^ ]*)',request_header)
+
 		if ret :
 			request_http=ret.group(1)   
 			print(request_http)
 		
-			if request_http == '/':
-				request_http = '/index.html'			
+		if request_http =='/':
+			request_http = '/index.html'			
 			
 		  	#如果访问对是/index, 就给相应的html --->不可取，因为还有很多被动请求
 		  	#if request_http == '/index.html':	
@@ -65,24 +66,22 @@ class WSGIServer(object):
 		 	#with open('./index.html','rb') as f:
 		 	#   context= f.read()
 		if not request_http.endswith(".html"):
-			#不是以py 结尾的。就进入静态网页流程：
-
+			#不是以 结尾的。就进入静态网页流程：
+			print('static com')
+			print(request_http)
 			try:
-				f=open('.'+'/static'+request_http,'rb')
+				f=open('./static'+request_http,'rb')
+			
 			#context=f.read()                         
 			#f.close()  
-
 			except Exception as ret:
-				header = "HTTP/1.1 404 NOT FOUND\r\n"
+				print(ret)
+				header = "HTTP/1.1 404 not fault\r\n"
 			#body 为打开html文件存储对内容,可以二进制方式打开
-		
 				respon = header +'\r\n'
-				respon += "----not found--"         
-
-		
+				respon += "<h1>----not found----<\h1>"         
+				print(respon)
 				client_socket.send(respon.encode('utf-8'))
-
-
 					#client_socket .close()
 					#不能关闭套接字，
 				
@@ -101,8 +100,7 @@ class WSGIServer(object):
 
 		else:
 			#动态请求 流程，对应动态网页
-				#解析application 返回的头
-
+			#解析application 返回的头
 			#header ="HTTP/1.1 200 OK/r/n"
 			env = dict()
 			
@@ -117,14 +115,14 @@ class WSGIServer(object):
 #			header += '/r/n'
 
 			for  temp in  self.header_mes:
-				'''temp[0]、[1] '''
+				#temp[0]、[1]
 				header += "%s:%s\r\n" %(temp[0],temp[1])
 
 			header +="\r\n"
 
 
 			respon = header+body
-			print(respon)
+			#print(respon)
 
 			#client_socket.send(respon.encode('utf-8'))
 			client_socket.send(header.encode('utf-8'))
@@ -134,10 +132,10 @@ class WSGIServer(object):
 		client_socket.close()
 
 	def  start_respon(self,status,header_mes):
-		''' 用于接受'''
+		# 用于接受'
 		self.status=status
 		self.header_mes=header_mes     #header_mes是列表
-		
+
 
 def  main():
 	''' '''
